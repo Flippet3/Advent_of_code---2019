@@ -33,7 +33,6 @@ class DiagnosticProgram:
             elif (opcode == 4):
                 d_instruction_pointer = 2;
                 indices = self.getIndices(d_instruction_pointer);
-                d_instruction_pointer = 2;
                 self.outputs.append(self.cur_memory[indices[0]]);
             elif (opcode == 5):
                 d_instruction_pointer = 3;
