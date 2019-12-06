@@ -9,11 +9,11 @@ import matplotlib.pyplot as plt
 
 class DiagnosticProgram:
     
-    def __init__(self, memory):
+    def __init__(self, memory : np.ndarray) -> type(None):
         self.base_memory = memory;
         self.reset();
     
-    def execute(self, i_input):
+    def execute(self, i_input : int) -> int:
         self.input = i_input;
         self.outputs = [];
         while True:
@@ -63,7 +63,7 @@ class DiagnosticProgram:
             self.instruction_pointer += d_instruction_pointer;
         return self.cur_memory[0];
         
-    def getIndices(self, length):
+    def getIndices(self, length : int) -> list:
         values = []
         opcode = self.cur_memory[self.instruction_pointer];
         for i in range(length-1):
@@ -74,7 +74,7 @@ class DiagnosticProgram:
                 values.append(self.cur_memory[self.instruction_pointer+1+i])
         return values;
 
-    def reset(self):
+    def reset(self) -> type(None):
         self.instruction_pointer = 0;
         self.cur_memory = self.base_memory.copy()
 
