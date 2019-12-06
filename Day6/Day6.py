@@ -35,39 +35,36 @@ if (__name__ == '__main__'):
     data = pd.read_csv('Input_Day6.txt', header=None, names=['center', 'orbiter'], sep=")");
     #data = pd.read_csv('Test.txt', header=None, names=['center', 'orbiter'], sep=")");
     
-    planets = []
+    planets = {}
     for i in range(len(data.center)):
         cen = data.center[i];
         orb = data.orbiter[i];
-        cen_i = [i for i,each in enumerate(planets) if each.name == cen];
-        orb_i = [i for i,each in enumerate(planets) if each.name == orb];
-        if len(cen_i) != 0:
-            cen = planets[cen_i[0]];
+        #cen_i = [i for i,each in enumerate(planets) if each.name == cen][0];
+        #orb_i = [i for i,each in enumerate(planets) if each.name == orb][0];
+        if cen in planets:
+            cen = planets[cen];
         else:
             cen = Planet(cen);
-            planets.append(cen);
-        if (len(orb_i) != 0):
-            orb = planets[orb_i[0]];
+            planets[cen.name] = cen;
+        if orb in planets:
+            orb = planets[orb];
         else:
             orb = Planet(orb);
-            planets.append(orb);
+            planets[orb.name] = orb;
         cen + orb;
     
-    com_i = [i for i,each in enumerate(planets) if each.name == 'COM'];
-    planets[com_i[0]].broadcast_distance(-1);
+    planets['COM'].broadcast_distance(-1);
     
-    dist = [planet.distance for planet in planets];
+    dist = [planet.distance for planet in planets.values()];
     
     print("Day 6-1 answer is {0}".format(sum(dist)));
     
-    for planet in planets:
+    for planet in planets.values():
         planet.distance = 10000;
     
-    you_i = [i for i,each in enumerate(planets) if each.name == 'YOU'][0];
-    san_i = [i for i,each in enumerate(planets) if each.name == 'SAN'][0];
-    planets[you_i].broadcast_distance(-1);
+    planets['YOU'].broadcast_distance(-1);
     
-    print("Day 6-2 answer is {0}".format(planets[san_i].distance - 2));
+    print("Day 6-2 answer is {0}".format(planets['SAN'].distance - 2));
 
 
     
