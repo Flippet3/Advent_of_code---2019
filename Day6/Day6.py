@@ -39,8 +39,6 @@ if (__name__ == '__main__'):
     for i in range(len(data.center)):
         cen = data.center[i];
         orb = data.orbiter[i];
-        #cen_i = [i for i,each in enumerate(planets) if each.name == cen][0];
-        #orb_i = [i for i,each in enumerate(planets) if each.name == orb][0];
         if cen in planets:
             cen = planets[cen];
         else:
