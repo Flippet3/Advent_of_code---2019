@@ -9,10 +9,10 @@ from itertools import permutations
 
 
 class IntCode:
-    def __init__(self, memory : np.ndarray) -> type(None):
+    def __init__(self, memory: np.ndarray) -> type(None):
         self.base_memory = memory;
         self.reset();
-        self.d_instruction_pointers = dict(zip([1,2,3,4,5,6,7,8,9,99], [4,4,2,2,3,3,4,4,2,1]));
+        self.d_instruction_pointers = dict(zip([1, 2, 3, 4, 5, 6, 7, 8, 9, 99], [4, 4, 2, 2, 3, 3, 4, 4, 2, 1]));
     
     def execute(self, i_input : int, i_phase : int = None, breakatoutput : bool = False) -> int:
         self.input = i_input;
