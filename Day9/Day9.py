@@ -14,11 +14,11 @@ class IntCode:
         self.reset();
         self.d_instruction_pointers = dict(zip([1, 2, 3, 4, 5, 6, 7, 8, 9, 99], [4, 4, 2, 2, 3, 3, 4, 4, 2, 2]));
     
-    def execute(self, i_input : int, i_phase : int = None, breakatoutput : bool = False) -> int:
+    def execute(self, i_input : int, breakat2ndinput : bool = False) -> int:
         self.input = i_input;
-        self.phase = i_phase;
         self.outputs = [];
         self.indices = [0 for i in range(3)];
+        gaveinput = False;
         while True:
             opcode = self.cur_memory[self.instruction_pointer]%100;
             if (opcode == 99):
@@ -32,16 +32,12 @@ class IntCode:
             elif (opcode == 2):
                 self.cur_memory[self.indices[2]] = np.prod(self.cur_memory[self.indices[:-1]]);
             elif (opcode == 3):
-                if (self.inputs_given == 0 and self.phase!= None):
-                    self.cur_memory[self.indices[0]] = self.phase;
-                else:
-                    self.cur_memory[self.indices[0]] = self.input;
-                self.inputs_given += 1;
+                if (breakat2ndinput and gaveinput):
+                    break;
+                self.cur_memory[self.indices[0]] = self.input;
+                gaveinput = True;
             elif (opcode == 4):
                 self.outputs.append(self.cur_memory[self.indices[0]]);
-                if (breakatoutput):
-                    self.instruction_pointer += d_instruction_pointer;
-                    break;
             elif (opcode == 5):
                 if (self.cur_memory[self.indices[0]]!=0):
                     d_instruction_pointer = self.cur_memory[self.indices[1]] - self.instruction_pointer;
@@ -77,7 +73,6 @@ class IntCode:
     def reset(self) -> type(None):
         self.instruction_pointer = 0;
         self.relative_pointer = 0;
-        self.inputs_given = 0;
         self.cur_memory = self.base_memory.copy()
     
     def checkComplete(self) -> bool:
