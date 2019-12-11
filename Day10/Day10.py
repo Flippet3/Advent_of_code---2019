@@ -69,7 +69,7 @@ if (__name__ == '__main__'):
 
         
     print("Day 10-1 answer is {0}".format(can_see.max()));
-    
+    t1= time.time();
     max_i = can_see.argmax();
     x_i = max_i%field.width;
     y_i = int(max_i/field.width);
@@ -110,5 +110,6 @@ if (__name__ == '__main__'):
 
     
     #%%
-    t1 = time.time();
+    t2 = time.time();
     print ("Programme took {0} seconds to run".format(t1-t0));
+    print ("Programme took {0} seconds to run".format(t2-t1));

@@ -12,68 +12,67 @@ class IntCode:
     def __init__(self, memory: np.ndarray) -> type(None):
         self.base_memory = memory;
         self.reset();
-        self.d_instruction_pointers = dict(zip([1, 2, 3, 4, 5, 6, 7, 8, 9, 99], [4, 4, 2, 2, 3, 3, 4, 4, 2, 1]));
+        self.d_instruction_pointers = dict(zip([1, 2, 3, 4, 5, 6, 7, 8, 9, 99], [4, 4, 2, 2, 3, 3, 4, 4, 2, 2]));
     
     def execute(self, i_input : int, i_phase : int = None, breakatoutput : bool = False) -> int:
         self.input = i_input;
         self.phase = i_phase;
         self.outputs = [];
+        self.indices = [0 for i in range(3)];
         while True:
             opcode = self.cur_memory[self.instruction_pointer]%100;
             if (opcode == 99):
                 break;
             d_instruction_pointer = self.d_instruction_pointers[opcode];
-            indices = self.getIndices(d_instruction_pointer);
-            if max(indices) > len(self.cur_memory)-1:
-                self.cur_memory = np.append(self.cur_memory, np.zeros(max(indices) - len(self.cur_memory) + 1, dtype='int64'), axis=0);
+            self.setIndices(d_instruction_pointer);
+            if max(self.indices) > len(self.cur_memory)-1:
+                self.cur_memory = np.append(self.cur_memory, np.zeros(max(self.indices) - len(self.cur_memory) + 1, dtype='int64'), axis=0);
             if (opcode == 1):
-                self.cur_memory[indices[-1]] = sum(self.cur_memory[indices[:-1]]);
+                self.cur_memory[self.indices[2]] = sum(self.cur_memory[self.indices[:-1]]);
             elif (opcode == 2):
-                self.cur_memory[indices[-1]] = np.prod(self.cur_memory[indices[:-1]]);
+                self.cur_memory[self.indices[2]] = np.prod(self.cur_memory[self.indices[:-1]]);
             elif (opcode == 3):
                 if (self.inputs_given == 0 and self.phase!= None):
-                    self.cur_memory[indices[0]] = self.phase;
+                    self.cur_memory[self.indices[0]] = self.phase;
                 else:
-                    self.cur_memory[indices[0]] = self.input;
+                    self.cur_memory[self.indices[0]] = self.input;
                 self.inputs_given += 1;
             elif (opcode == 4):
-                self.outputs.append(self.cur_memory[indices[0]]);
+                self.outputs.append(self.cur_memory[self.indices[0]]);
                 if (breakatoutput):
                     self.instruction_pointer += d_instruction_pointer;
                     break;
             elif (opcode == 5):
-                if (self.cur_memory[indices[0]]!=0):
-                    d_instruction_pointer = self.cur_memory[indices[1]] - self.instruction_pointer;
+                if (self.cur_memory[self.indices[0]]!=0):
+                    d_instruction_pointer = self.cur_memory[self.indices[1]] - self.instruction_pointer;
             elif (opcode == 6):
-                if (self.cur_memory[indices[0]]==0):
-                    d_instruction_pointer = self.cur_memory[indices[1]] - self.instruction_pointer;
+                if (self.cur_memory[self.indices[0]]==0):
+                    d_instruction_pointer = self.cur_memory[self.indices[1]] - self.instruction_pointer;
             elif (opcode == 7):
-                if (self.cur_memory[indices[0]]<self.cur_memory[indices[1]]):
-                    self.cur_memory[indices[2]] = 1;
+                if (self.cur_memory[self.indices[0]]<self.cur_memory[self.indices[1]]):
+                    self.cur_memory[self.indices[2]] = 1;
                 else:
-                    self.cur_memory[indices[2]] = 0;
+                    self.cur_memory[self.indices[2]] = 0;
             elif (opcode == 8):
-                if (self.cur_memory[indices[0]]==self.cur_memory[indices[1]]):
-                    self.cur_memory[indices[2]] = 1;
+                if (self.cur_memory[self.indices[0]]==self.cur_memory[self.indices[1]]):
+                    self.cur_memory[self.indices[2]] = 1;
                 else:
-                    self.cur_memory[indices[2]] = 0;
+                    self.cur_memory[self.indices[2]] = 0;
             elif (opcode == 9):
-                self.relative_pointer += self.cur_memory[indices[0]];
+                self.relative_pointer += self.cur_memory[self.indices[0]];
             self.instruction_pointer += d_instruction_pointer;
         return self.cur_memory[0];
         
-    def getIndices(self, length : int) -> list:
-        values = []
+    def setIndices(self, length : int) -> type(None):
         opcode = self.cur_memory[self.instruction_pointer];
         for i in range(length-1):
-            mode = int((opcode * 10**(-i-2))%10);
+            mode = opcode // 10**(i+2)%10;
             if (mode==2):
-                values.append(self.relative_pointer + self.cur_memory[self.instruction_pointer+1+i]);
+                self.indices[i] = (self.relative_pointer + self.cur_memory[self.instruction_pointer+1+i]);
             if (mode==1):
-                values.append(self.instruction_pointer+1+i)
+                self.indices[i] = (self.instruction_pointer+1+i)
             if (mode==0):
-                values.append(self.cur_memory[self.instruction_pointer+1+i])
-        return values;
+                self.indices[i] = (self.cur_memory[self.instruction_pointer+1+i])
 
     def reset(self) -> type(None):
         self.instruction_pointer = 0;
@@ -102,7 +101,7 @@ if (__name__ == '__main__'):
         
         
     print("Day 9-1 answer is {0}".format(intcode.outputs[0]));
-        
+    t1 = time.time();
     intcode.reset()
     intcode.execute(2);
     
@@ -111,5 +110,6 @@ if (__name__ == '__main__'):
 
     
     #%%
-    t1 = time.time();
+    t2 = time.time();
     print ("Programme took {0} seconds to run".format(t1-t0));
+    print ("Programme took {0} seconds to run".format(t2-t1));
