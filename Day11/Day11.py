@@ -2,14 +2,8 @@ import time
 t0 = time.time();
 
 # Day 1
-import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from itertools import permutations
-from math import atan2
-#import sys, os
-#path = os.path.dirname(r'%s' % os.getcwd())
-#sys.path.append(path);
 from Day9 import IntCode
 
 def robot_walk(gridspaces, intcode):
