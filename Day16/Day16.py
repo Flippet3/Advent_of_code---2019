@@ -17,11 +17,11 @@ import math
 if (__name__ == '__main__'):
     #Load data.
     plt.close('all')
-    #data = pd.read_csv('Input_Day16.txt', header=None);
-    data = pd.read_csv('Test.txt', header=None);
+    data = pd.read_csv('Input_Day16.txt', header=None);
+    #data = pd.read_csv('Test.txt', header=None);
     digit_str = data[0][0];
     digit_len = len(digit_str);
-    digit = [int(i) for i in digit_str];
+    digit = np.array([int(i) for i in digit_str]).T;
     
     # Create multiplication code.
     multicode = np.zeros([digit_len, digit_len]);
@@ -34,13 +34,8 @@ if (__name__ == '__main__'):
     
     iteration = 0;
     while iteration < 100:
-        newdigit = [0] * digit_len;
-        for i in range(digit_len):
-            newdigit[i] = abs(sum([digit[j] * multicode[i,j] for j in range(digit_len)]))%10;
-        
-        
-        
-        digit = newdigit;
+        result_m = multicode * digit;
+        digit = abs(result_m.sum(axis=1))%10
         
         iteration += 1;
     
